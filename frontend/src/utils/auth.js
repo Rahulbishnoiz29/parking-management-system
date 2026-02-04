@@ -1,0 +1,24 @@
+import { jwtDecode } from "jwt-decode"
+
+export const getUserFromToken = () => {
+  const token = localStorage.getItem("token")
+  if (!token) return null
+
+  try {
+    const decoded = jwtDecode(token)
+
+    // ⏱ current time in seconds
+    const currentTime = Date.now() / 1000
+
+    // ❌ token expired
+    if (decoded.exp < currentTime) {
+      localStorage.removeItem("token")
+      return null
+    }
+
+    return decoded
+  } catch {
+    localStorage.removeItem("token")
+    return null
+  }
+}
